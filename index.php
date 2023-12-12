@@ -1,7 +1,7 @@
 <?php
 $params = [
-    'token' => '5579826492:AAFE2UiUj_Tjik0u0hxWUdokR9XoSGU6vEc', #token
-    'bot_url' => 'https://api.telegram.org/bot',
+    'token' => '6511859075:AAG_PJoc3rB7KcSywL_vFraJn6V35BDs1P4', #token
+    'bot_url' => 'https://t.me/toshkent_fargonaRoBot',
 ];
 
 
