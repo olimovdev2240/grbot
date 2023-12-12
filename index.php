@@ -7,10 +7,10 @@ use Telegram\Bot\Api;
 $token = '6511859075:AAG_PJoc3rB7KcSywL_vFraJn6V35BDs1P4';
 
 // Chat ID ni to'ldiring (chat1 guruhining ID si)
-$chat1Id = '@taksitoshfar';
+$chat1Id = '-1002076251830';
 
 // Chat2 guruhining ID sini to'ldiring
-$chat2Id = '@toshfarzakaz';
+$chat2Id = '-1002044782224';
 
 // Telegram Bot API ga ulangan obyekt yaratish
 $telegram = new Api($token);
