@@ -1,45 +1,52 @@
 <?php
+
 require 'vendor/autoload.php';
 
 use Telegram\Bot\Api;
-use Telegram\Bot\Objects\Message;
+use Telegram\Bot\Objects\Update;
 
-// Telegram Bot API tokeni
 $botToken = "6511859075:AAG_PJoc3rB7KcSywL_vFraJn6V35BDs1P4";
-// chat1 guruh IDsi
 $chat1GroupId = -1002076251830;
-// chat2 guruh IDsi
 $chat2GroupId = -1002044782224;
 
-// Telegram botini yaratamiz
 $telegram = new Api($botToken);
 
-// Chat1 guruhidagi administratorlarni olish
-$admins = $telegram->getChatAdministrators(['chat_id' => $chat1GroupId]);
+function processUpdate($update)
+{
+    global $telegram, $chat1GroupId, $chat2GroupId;
 
-// Chat1 guruhidagi administratorlarning IDlarini olamiz
-$adminIds = array_map(function ($admin) {
-    return $admin->getId();
-}, $admins);
-
-// Chat1 guruhidagi xabarlarni forward qilish
-$telegram->addCommand(\Telegram\Bot\Commands\HelpCommand::class);
-
-$telegram->on(function ($update) use ($telegram, $chat1GroupId, $chat2GroupId, $adminIds) {
     $message = $update->getMessage();
+    $chatId = $message->getChat()->getId();
     $userId = $message->getFrom()->getId();
 
-    // Faqat guruh administratorlarining xabarlari chat2 guruhiga yuboriladi
-    if (in_array($userId, $adminIds)) {
-        // Forward qilish
+    // Foydalanuvchi admin emas
+    if (!$telegram->getChatMember([
+        'chat_id' => $chat1GroupId,
+        'user_id' => $userId,
+    ])->isAdministrator()) {
+        // Foydalanuvchiga "Sizga tezda bog'lanamiz" xabari yuboriladi
+        $telegram->sendMessage([
+            'chat_id' => $chatId,
+            'text' => "Sizga tezda bog'lanamiz",
+        ]);
+
+        // Xabarni chat2 guruhiga forward qilish
         $telegram->forwardMessage([
             'chat_id' => $chat2GroupId,
-            'from_chat_id' => $chat1GroupId,
+            'from_chat_id' => $chatId,
+            'message_id' => $message->getMessageId(),
+        ]);
+
+        // Xabarni o'chirib tashlash
+        $telegram->deleteMessage([
+            'chat_id' => $chatId,
             'message_id' => $message->getMessageId(),
         ]);
     }
-}, function ($message) {
-    return true;
-});
+}
 
-$telegram->commandsHandler(true);
+$updates = $telegram->getUpdates();
+
+foreach ($updates as $update) {
+    processUpdate($update);
+}
