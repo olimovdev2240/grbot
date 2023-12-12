@@ -20,7 +20,7 @@ function processUpdate($update)
     $userId = $message->getFrom()->getId();
 
     // Foydalanuvchi admin emas
-    if (!$telegram->getChatMember([
+    if ($telegram->getChatMember([
         'chat_id' => $chat1GroupId,
         'user_id' => $userId,
     ])->isAdministrator()) {
