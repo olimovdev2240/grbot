@@ -24,4 +24,4 @@ foreach ($response as $admin) {
     $telegram->sendMessage(['chat_id' => $chat2Id, 'text' => $message]);
 }
 
-echo "Xabarlar yuborildi!";
+// echo "Xabarlar yuborildi!";
